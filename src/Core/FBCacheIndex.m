@@ -151,18 +151,22 @@ static void releaseStatement(sqlite3_stmt *statement, sqlite3 *database)
     if (self) {
         NSString *cacheDBFullPath =
         [folderPath stringByAppendingPathComponent:cacheFilename];
-
+		
+		dispatch_queue_t highPriQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         dispatch_queue_t lowPriQueue =
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
         _databaseQueue = dispatch_queue_create(
                                                "Data Cache queue",
                                                DISPATCH_QUEUE_SERIAL);
-        dispatch_set_target_queue(_databaseQueue, lowPriQueue);
-
+        dispatch_set_target_queue(_databaseQueue, highPriQueue);
+		
         __block BOOL success = YES;
-
+		
         // TODO: This is really bad if higher layers are going to be
         // multi-threaded.  And this has to be unblocked.
+		
+		// JASON: Yeah this is bad. This hangs the friggin main thread on slow devices. You shouldn't be doing it this way. *sigh*
+		// I've hacked this by making the db calls here happen on a high priority queue before lowering the queue priority
         dispatch_sync(
                       _databaseQueue,
                       ^{
@@ -171,7 +175,7 @@ static void releaseStatement(sqlite3_stmt *statement, sqlite3 *database)
                                                            &_database,
                                                            SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
                                                            nil) == SQLITE_OK);
-
+						  
                           if (success) {
                               success = (fbdfl_sqlite3_exec(
                                                             _database,
@@ -182,22 +186,23 @@ static void releaseStatement(sqlite3_stmt *statement, sqlite3 *database)
                           }
                       }
                       );
-
+		
         if (!success) {
             [self release];
             return nil;
         }
-
+		
+		dispatch_set_target_queue(_databaseQueue, lowPriQueue);
         // Get disk usage asynchronously
         dispatch_async(_databaseQueue, ^{
             [self _fetchCurrentDiskUsage];
         });
-
+		
         _cachedEntries = [[NSCache alloc] init];
         _cachedEntries.delegate = self;
         _cachedEntries.countLimit = kDefaultCacheCountLimit;
     }
-
+	
     return self;
 }
 
