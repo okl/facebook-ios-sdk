@@ -1941,6 +1941,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/facebook_ios_sdk.dst;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -1964,6 +1965,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DSTROOT = /tmp/facebook_ios_sdk.dst;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2112,6 +2114,7 @@
 				GCC_PREFIX_HEADER = facebook_ios_sdk_Prefix.pch;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				PRODUCT_NAME = facebook_ios_sdk;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
