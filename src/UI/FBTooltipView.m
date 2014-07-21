@@ -154,7 +154,7 @@ CGMutablePathRef _createDownPointingBubbleWithRect(CGRect rect, CGFloat arrowMid
     if (positionInSuperView.y - bubbleHeight - kNUXBubbleMargin < superView.bounds.origin.y ) {
         direction = FBTooltipViewArrowDirectionUp;
         position = CGPointMake(CGRectGetMidX(anchorView.frame), CGRectGetMaxY(anchorView.frame));
-        positionInSuperView = [superView convertPoint:position fromView:anchorView.superview];
+//        positionInSuperView = [superView convertPoint:position fromView:anchorView.superview];
     }
 
     [self presentInView:superView withArrowPosition:position direction:direction];
